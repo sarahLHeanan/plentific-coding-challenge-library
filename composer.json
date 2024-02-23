@@ -1,0 +1,19 @@
+{
+    "name": "sarahheanan/plentific-coding-challenge-library",
+    "description": "Retrieve and create users from dummy API",
+    "autoload": {
+        "psr-4": {
+            "Sarahheanan\\PlentificCodingChallengeLibrary\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sarah Heanan",
+            "email": "sarahlheanan@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "7.9.x-dev"
+    }
+}
