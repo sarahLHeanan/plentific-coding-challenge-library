@@ -49,24 +49,31 @@ class User
      * @todo functionality
      * @todo validation
      */
-    public function get(int $id)
+    public function fetchUserData(int $id)
     {
         $response = $this->client->request('GET', self::API_URL . 'users/' . $id);
 
         $body = json_decode($response->getBody()->getContents(), true);
 
         if(!empty($body)) {
-            return new UserDTO(
-                $body['data']['id'], 
-                $body['data']['email'], 
-                $body['data']['first_name'], 
-                $body['data']['last_name'], 
-                $body['data']['avatar']
-            );
+            return $body;
         } 
         else {
             echo 'User not available';
         }
+    }
+
+    public function getUser(int $id)
+    {
+        $body = $this->fetchUserData($id);
+
+        return new UserDTO(
+            $body['data']['id'], 
+            $body['data']['email'], 
+            $body['data']['first_name'], 
+            $body['data']['last_name'], 
+            $body['data']['avatar']
+        );
     }
 
 
