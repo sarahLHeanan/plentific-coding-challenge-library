@@ -1,8 +1,10 @@
 <?php
 
+namespace Sarahheanan\PlentificCodingChallengeLibrary;
+
 class User
 {
-    public $package = 'the package is loading';
+    public $package = 'The package is loading';
     public $client;
     const API_URL = 'https://reqres.in/api/';
     
