@@ -2,6 +2,8 @@
 
 namespace Sarahheanan\PlentificCodingChallengeLibrary;
 
+use DTO\UserDTO;
+
 class User
 {
     public $package = 'The package is loading';
