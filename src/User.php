@@ -2,7 +2,7 @@
 
 namespace Sarahheanan\PlentificCodingChallengeLibrary;
 
-use DTO\UserDTO;
+use Sarahheanan\PlentificCodingChallengeLibrary\DTO\UserDTO;
 
 class User
 {
