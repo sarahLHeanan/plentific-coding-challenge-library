@@ -36,6 +36,23 @@ class User
     }
 
     /**
+     * Set data for API
+     * Payload for POST request
+     * This is specific to one request but would be more reusable if there were more
+     * 
+     * @param string $name
+     * @param string $jobTitle
+     *
+     * @return array
+     */
+    protected function setData(string $name, string $jobTitle) : array
+    {
+        $payload = json_encode([$name, $job]);
+
+        return json_decode($this->client->request('POST', self::API_URL . 'api/users', $payload));
+    }
+
+    /**
      * Paginate data (users)
      * @param array $data User data
      * @param int $page The page to display
@@ -129,31 +146,29 @@ class User
 
     /**
      * Create a user
+     * @param $name Name
+     * @param $job Job title
      *
-     * @return void
-     * @todo functionality
-     * @todo are any of these params optional? make them nullable
-     * @todo assume we won't actually have to pass the id, this is temporary
-     * @todo validation/error handling
+     * @return int $id
      */
-    public function createUser(
-        int $id, 
-        string $email, 
-        string $firstName, 
-        string $lastName,
-        string $avatar)
+    public function createUser(string $name, string $job)
     {
-        $user = new UserDTO(
-            $id,
-            $email,
-            $firstName,
-            $lastName,
-            $avatar
-        );
+        try {
+            $body = $this->setData($name, $job);
 
-        $payload = json_encode($user);
+            if (empty($body) || is_null($body)) {
+     
+                throw new UserException(self::NO_DATA);
 
-        return $payload;
+                return;
+            }
+
+            return $body['id'];
+          }
+          
+          catch (UserException $e) {
+            echo $e->errorMessage();
+        }
     }
 }
 

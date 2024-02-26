@@ -119,16 +119,33 @@ final class UserTest extends TestCase
 
     public function testUserCanCreateAUser(): void
     {
+        $name = 'morpheus';
+        $job = 'leader';
 
+        $apiTestData = [
+            'name' => $name,
+            'job' => $job,
+            'id' => 22,
+            'created_at' => '2024-02-26T13:34:03.058Z'
+        ];
+
+        //build mock of set method
+        $apiMock = $this->getMockBuilder(User::class)
+        ->onlyMethods(['setData'])
+        ->getMock();
+
+        //change its return output to simulate http response
+        $apiMock->expects($this->any())
+            ->method('setData')
+            ->willReturn($apiTestData);
+
+        $user = $apiMock->createUser($name, $job);
+        $this->assertEquals($user, $apiTestData['id']);
+        
     }
 
 
     public function testExceptionIsThrownIfDataHasChanged(): void
-    {
-
-    }
-
-    public function testExceptionThrownIsSpecificToDomain(): void
     {
 
     }
