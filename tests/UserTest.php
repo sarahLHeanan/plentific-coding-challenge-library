@@ -55,7 +55,9 @@ final class UserTest extends TestCase
 
         $id = 2;
 
+
         // @todo see if I can get this to work (throws exception when I dump out)
+        // $this->expectExceptionMessage('no data available');
         // $this->expectException(UserException::class);
 
         $user = $apiMock->getUser($id);
@@ -83,10 +85,10 @@ final class UserTest extends TestCase
                 ],
                 [
                     'id' => 3,
-                    'email' => 'michael.lawson@reqres.in',
-                    'first_name' => 'Michael',
-                    'last_name' => 'Lawson',
-                    'avatar' => 'https://reqres.in/img/faces/7-image.jpg'
+                    'email' => 'lindsay.ferguson@reqres.in',
+                    'first_name' => 'Lindsay',
+                    'last_name' => 'Ferguson',
+                    'avatar' => 'https://reqres.in/img/faces/8-image.jpg'
                 ]
 
             ]
@@ -138,7 +140,6 @@ final class UserTest extends TestCase
 
         $user = $apiMock->createUser($name, $job);
         $this->assertEquals($user, $apiTestData['id']);
-        
     }
 
 
