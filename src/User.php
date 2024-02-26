@@ -118,7 +118,7 @@ class User
      *
      * @return object UserDTO
      */
-    public function getUser(int $id)
+    public function getUser(int $id) : UserDTO | array
     {
         try {
             $body = $this->fetchData($id, 'users/');
@@ -127,7 +127,7 @@ class User
      
                 throw new UserException(self::NO_DATA);
 
-                return;
+                return [];
             }
 
             return new UserDTO (
@@ -151,7 +151,7 @@ class User
      *
      * @return int $id
      */
-    public function createUser(string $name, string $job)
+    public function createUser(string $name, string $job) : int | array
     {
         try {
             $body = $this->setData($name, $job);
@@ -160,7 +160,7 @@ class User
      
                 throw new UserException(self::NO_DATA);
 
-                return;
+                return [];
             }
 
             return $body['id'];
