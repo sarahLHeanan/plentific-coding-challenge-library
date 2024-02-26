@@ -8,7 +8,7 @@ final class UserTest extends TestCase
 
     public function testGetUserReturnsADTO(): void
     {
-        //mock decoded json response (we don't really care if guzzle works or not)
+        //mock decoded json response (we are not testing guzzle or json_decode)
         $apiTestData = [
             'data' => [
                 'id' => 2,
@@ -21,14 +21,14 @@ final class UserTest extends TestCase
 
         $this->assertIsArray($apiTestData);
 
-        //build mock of get method
+        //build mock of fetch method
         $apiMock = $this->getMockBuilder(User::class)
-            ->onlyMethods(['fetchUserData'])
+            ->onlyMethods(['fetchData'])
             ->getMock();
 
         //change its return output to simulate http response
         $apiMock->expects($this->any())
-            ->method('fetchUserData')
+            ->method('fetchData')
             ->willReturn($apiTestData);
 
         $id = 2;

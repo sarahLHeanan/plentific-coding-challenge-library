@@ -44,14 +44,15 @@ class User
     /**
      * Get User By Id
      * @param $id The user id
+     * @param $query The request
      *
      * @return User $user
      * @todo functionality
      * @todo validation
      */
-    public function fetchUserData(int $id)
+    public function fetchData(int $id, string $query)
     {
-        $response = $this->client->request('GET', self::API_URL . 'users/' . $id);
+        $response = $this->client->request('GET', self::API_URL . $query . $id);
 
         $body = json_decode($response->getBody()->getContents(), true);
 
@@ -65,7 +66,7 @@ class User
 
     public function getUser(int $id)
     {
-        $body = $this->fetchUserData($id);
+        $body = $this->fetchData($id, 'users/');
 
         return new UserDTO(
             $body['data']['id'], 
