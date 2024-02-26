@@ -3,22 +3,21 @@
 namespace Sarahheanan\PlentificCodingChallengeLibrary;
 
 use Sarahheanan\PlentificCodingChallengeLibrary\DTO\UserDTO;
+use Sarahheanan\PlentificCodingChallengeLibrary\Exceptions\UserException;
 
 class User
 {
     public $package = 'The package is loading';
     public $client;
     const API_URL = 'https://reqres.in/api/';
-    
-
-    public function testPackage() {
-        echo $this->package;
-    }
 
     public function __construct() {
         $this->client = new \GuzzleHttp\Client();
     }
-    
+
+    public function testPackage() {
+        echo $this->package;
+    }
 
     /**
      * Get list of users
@@ -42,39 +41,48 @@ class User
     }
 
     /**
-     * Get User By Id
-     * @param $id The user id
-     * @param $query The request
+     * Fetch data from API
+     * @param int|null $id The user id
+     * @param string $query The request
      *
-     * @return User $user
-     * @todo functionality
-     * @todo validation
+     * @return array
+     * @todo exception handling
      */
-    public function fetchData(int $id, string $query)
+    protected function fetchData(int $id = null, string $query) : array
     {
         $response = $this->client->request('GET', self::API_URL . $query . $id);
 
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if(!empty($body)) {
-            return $body;
-        } 
-        else {
-            echo 'User not available';
-        }
+        return json_decode($response->getBody()->getContents(), true);
     }
 
+    /**
+     * Get User as DTO
+     * @param int $id The user id
+     *
+     * @return object
+     */
     public function getUser(int $id)
     {
-        $body = $this->fetchData($id, 'users/');
+        try {
+            $body = $this->fetchData($id, 'users/');
 
-        return new UserDTO(
-            $body['data']['id'], 
-            $body['data']['email'], 
-            $body['data']['first_name'], 
-            $body['data']['last_name'], 
-            $body['data']['avatar']
-        );
+            if(empty($body)) {
+              //throw exception if no data
+              throw new UserException($email);
+            }
+
+            return new UserDTO(
+                $body['data']['id'], 
+                $body['data']['email'], 
+                $body['data']['first_name'], 
+                $body['data']['last_name'], 
+                $body['data']['avatar']
+            );
+          }
+          
+          catch (UserException $e) {
+            echo $e->errorMessage();
+          }
     }
 
 
