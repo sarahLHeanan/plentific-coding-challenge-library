@@ -42,7 +42,6 @@ class User
      * @param int $pageSize The number of records to display per page
      *
      * @return array|void
-     * @todo exception handling
      */
     protected function paginate(array $data, int $page, int $pageSize)
     {
@@ -62,11 +61,12 @@ class User
     /**
      * Get list of users
      *
-     * @return Array
+     * @param int $page The page to display (pagination)
+     * @param int $pageSize The number of records to display per page (pagination)
      * 
      * @return array
      */
-    public function index() : array
+    public function index(int $page, int $pageSize) : array
     {
         try {
             $body = $this->fetchData($id, 'users?page=2');
@@ -78,7 +78,7 @@ class User
 
             // loop through users and return each as DTO
             foreach($body['data'] as $data) { 
-                $users[] =  new UserDTO(
+                $users[] = new UserDTO(
                     $data['id'], 
                     $data['email'], 
                     $data['first_name'], 
@@ -87,9 +87,7 @@ class User
                 );
             }
 
-            die(var_dump($users));
-
-            // return $this->paginate($users);
+            return $this->paginate($users, $page, $pageSize);
           }
           
           catch (UserException $e) {

@@ -83,6 +83,13 @@ final class UserTest extends TestCase
                     'first_name' => 'Michael',
                     'last_name' => 'Lawson',
                     'avatar' => 'https://reqres.in/img/faces/7-image.jpg'
+                ],
+                [
+                    'id' => 3,
+                    'email' => 'michael.lawson@reqres.in',
+                    'first_name' => 'Michael',
+                    'last_name' => 'Lawson',
+                    'avatar' => 'https://reqres.in/img/faces/7-image.jpg'
                 ]
 
             ]
@@ -97,9 +104,17 @@ final class UserTest extends TestCase
             ->method('fetchData')
             ->willReturn($apiTestData);
 
-         $users = $apiMock->index();
+        //set pagination variables
+        $page = 1;
+        $pageSize = 2;
+
+        $users = $apiMock->index($page, $pageSize);
 
         $this->assertIsArray($users);
+        $this->assertCount($pageSize, $users);
+
+        // @todo get correct syntax for this
+        // $this->assertContains($users, 'janet');
     }
 
     public function testUserCanCreateAUser(): void
