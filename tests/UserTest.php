@@ -111,9 +111,6 @@ final class UserTest extends TestCase
 
         $this->assertIsArray($users);
         $this->assertCount($pageSize, $users);
-
-        // @todo get correct syntax for this
-        // $this->assertContains($users, 'janet');
     }
 
     public function testUserCanCreateAUser(): void
@@ -166,5 +163,9 @@ final class UserTest extends TestCase
         $user = $apiMock->getUser($id);
 
         $this->assertNull($user);
+
+        // @todo assert exception thrown, seems difficult as its being caught?
+        // $this->expectExceptionMessage('no data available');
+        // $this->expectException(UserException::class);
     }
 }
