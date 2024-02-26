@@ -50,7 +50,7 @@ class User
      */
     protected function setData(string $name, string $jobTitle) : array
     {
-        $payload = json_encode([$name, $job]);
+        $payload = json_encode([$name, $jobTitle]);
 
         return json_decode($this->client->request('POST', self::API_URL . 'api/users', $payload));
     }
@@ -89,7 +89,7 @@ class User
     public function index(int $page, int $pageSize) : array
     {
         try {
-            $body = $this->fetchData('users?page=2', $id);
+            $body = $this->fetchData('users?page=2');
 
             if(empty($body['data'])) {
               //throw exception if no data
