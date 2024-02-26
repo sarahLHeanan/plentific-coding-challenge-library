@@ -24,15 +24,16 @@ class User
 
     /**
      * Fetch data from API
-     * @param int|null $id The user id
-     * @param string $query The request
-     *
-     * @return array
-     * @todo exception handling
-     */
-    protected function fetchData(int $id = null, string $query) : array
+
+    * @param string $query The request
+    * @param int|null $id The user id
+    *
+    * @return array
+    * @todo exception handling
+    */
+    protected function fetchData(string $query, int $id = null) : array
     {
-        $response = $this->client->request('GET', self::API_URL . $query . $id);
+        $response = $this->client->request('GET', self::API_URL . $query . $id ?? '');
 
         return json_decode($response->getBody()->getContents(), true);
     }
@@ -88,7 +89,7 @@ class User
     public function index(int $page, int $pageSize) : array
     {
         try {
-            $body = $this->fetchData($id, 'users?page=2');
+            $body = $this->fetchData('users?page=2', $id);
 
             if(empty($body['data'])) {
               //throw exception if no data
@@ -123,7 +124,7 @@ class User
     public function getUser(int $id)
     {
         try {
-            $body = $this->fetchData($id, 'users/');
+            $body = $this->fetchData('users/', $id);
 
             if(empty($body['data']) || is_null($body['data'])) {
                 throw new UserException(self::NO_DATA);
