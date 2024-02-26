@@ -11,6 +11,8 @@ class User
     public $client;
     const API_URL = 'https://reqres.in/api/';
     const NO_DATA = 'There is no data available';
+    const CHANGED_DATA = 'The data has changed';
+    const USER_KEYS = ['id', 'email', 'first_name','last_name', 'avatar'];
 
     public function __construct() {
         $this->client = new \GuzzleHttp\Client();
@@ -118,14 +120,23 @@ class User
      *
      * @return object UserDTO
      */
-    public function getUser(int $id) : UserDTO | array
+    public function getUser(int $id)
     {
         try {
             $body = $this->fetchData($id, 'users/');
 
             if(empty($body['data']) || is_null($body['data'])) {
-     
                 throw new UserException(self::NO_DATA);
+
+                return [];
+            }
+
+            $keys = ['id', 'email', 'first_name','last_name', 'avatar'];
+
+            $result = array_intersect(self::USER_KEYS, array_keys($body['data']));
+
+            if($result != $keys) {
+                throw new UserException(self::CHANGED_DATA);
 
                 return [];
             }

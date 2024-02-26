@@ -6,7 +6,6 @@ use Sarahheanan\PlentificCodingChallengeLibrary\Exceptions\UserException;
 
 final class UserTest extends TestCase
 {
-
     public function testGetUserReturnsADTO(): void
     {
         //mock decoded json response (we are not testing guzzle or json_decode)
@@ -46,12 +45,10 @@ final class UserTest extends TestCase
             'data' => []
         ];
 
-        //build mock of fetch method
         $apiMock = $this->getMockBuilder(User::class)
         ->onlyMethods(['fetchData'])
         ->getMock();
 
-        //change its return output to simulate http response
         $apiMock->expects($this->any())
             ->method('fetchData')
             ->willReturn($apiTestData);
@@ -147,6 +144,26 @@ final class UserTest extends TestCase
 
     public function testExceptionIsThrownIfDataHasChanged(): void
     {
+        //mock an unexpected/incorrect json response
+        $apiTestData = [
+            'data' => [
+                'id' => 2,
+                'fruit' => 'bananas',
+            ]
+        ];
 
+        $apiMock = $this->getMockBuilder(User::class)
+        ->onlyMethods(['fetchData'])
+        ->getMock();
+
+        $apiMock->expects($this->any())
+            ->method('fetchData')
+            ->willReturn($apiTestData);
+
+        $id = 2;
+
+        $user = $apiMock->getUser($id);
+
+        $this->assertNull($user);
     }
 }
