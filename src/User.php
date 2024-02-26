@@ -71,24 +71,25 @@ class User
         try {
             $body = $this->fetchData($id, 'users?page=2');
 
-            if(empty($body)) {
+            if(empty($body['data'])) {
               //throw exception if no data
               throw new UserException(self::NO_DATA);
             }
 
-            //loop through users and return a DTO for each
-            // @todo loop through associative array properly
-            for($i0; $i<count($body['data']); $i++) {
-                $users[$i] = new UserDTO(
-                    $body['data']['id'], 
-                    $body['data']['email'], 
-                    $body['data']['first_name'], 
-                    $body['data']['last_name'], 
-                    $body['data']['avatar']
+            // loop through users and return each as DTO
+            foreach($body['data'] as $data) { 
+                $users[] =  new UserDTO(
+                    $data['id'], 
+                    $data['email'], 
+                    $data['first_name'], 
+                    $data['last_name'], 
+                    $data['avatar']
                 );
             }
 
-            return $this->paginate($users);
+            die(var_dump($users));
+
+            // return $this->paginate($users);
           }
           
           catch (UserException $e) {
@@ -102,16 +103,19 @@ class User
      *
      * @return object UserDTO
      */
-    public function getUser(int $id) : UserDTO
+    public function getUser(int $id)
     {
         try {
             $body = $this->fetchData($id, 'users/');
 
-            if(empty($body)) {
-              throw new UserException(self::NO_DATA);
+            if(empty($body['data']) || is_null($body['data'])) {
+     
+                throw new UserException(self::NO_DATA);
+
+                return;
             }
 
-            return new UserDTO(
+            return new UserDTO (
                 $body['data']['id'], 
                 $body['data']['email'], 
                 $body['data']['first_name'], 
