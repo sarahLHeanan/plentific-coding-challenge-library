@@ -50,9 +50,11 @@ class User
      */
     protected function setData(string $name, string $jobTitle) : array
     {
-        $payload = [$name, $jobTitle];
+        $payload = ['name' => $name, 'job' => $jobTitle];
 
-        return json_decode($this->client->request('POST', self::API_URL . 'api/users', $payload));
+        $response = $this->client->request('POST', self::API_URL . 'api/users', $payload);
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
