@@ -39,7 +39,7 @@ final class UserTest extends TestCase
         $this->assertInstanceOf(UserDTO::class, $user);
     }
 
-    public function testUserReturnsListOfUsers(): void
+    public function testNoDataReturnsUserException() : void
     {
 
     }

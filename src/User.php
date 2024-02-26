@@ -10,6 +10,7 @@ class User
     public $package = 'The package is loading';
     public $client;
     const API_URL = 'https://reqres.in/api/';
+    const NO_DATA = 'There is no data available';
 
     public function __construct() {
         $this->client = new \GuzzleHttp\Client();
@@ -17,27 +18,6 @@ class User
 
     public function testPackage() {
         echo $this->package;
-    }
-
-    /**
-     * Get list of users
-     *
-     * @return Array
-     * @todo pagination
-     * @todo validation/error handling
-     */
-    public function index()
-    {
-        $response = $this->client->request('GET', self::API_URL . 'users?page=2');
-
-        $body = json_decode($response->getBody()->getContents(), true);
-
-        if(!empty($body)) {
-            var_dump($body);
-        } 
-        else {
-            echo 'No users available';
-        }
     }
 
     /**
@@ -56,19 +36,79 @@ class User
     }
 
     /**
+     * Paginate data (users)
+     * @param array $data User data
+     * @param int $page The page to display
+     * @param int $pageSize The number of records to display per page
+     *
+     * @return array|void
+     * @todo exception handling
+     */
+    protected function paginate(array $data, int $page, int $pageSize)
+    {
+        $totalRecords = count($data);
+
+        if($totalRecords == 0 || $page > $pageSize) {
+            return;
+        }
+
+        $totalPages = ceil($totalRecords/$pageSize);
+
+        $offset = ($page - 1) * $pageSize;
+
+        return array_slice($data, $offset, $pageSize);
+    }
+
+    /**
+     * Get list of users
+     *
+     * @return Array
+     * 
+     * @return array
+     */
+    public function index() : array
+    {
+        try {
+            $body = $this->fetchData($id, 'users?page=2');
+
+            if(empty($body)) {
+              //throw exception if no data
+              throw new UserException(self::NO_DATA);
+            }
+
+            //loop through users and return a DTO for each
+            // @todo loop through associative array properly
+            for($i0; $i<count($body['data']); $i++) {
+                $users[$i] = new UserDTO(
+                    $body['data']['id'], 
+                    $body['data']['email'], 
+                    $body['data']['first_name'], 
+                    $body['data']['last_name'], 
+                    $body['data']['avatar']
+                );
+            }
+
+            return $this->paginate($users);
+          }
+          
+          catch (UserException $e) {
+            echo $e->errorMessage();
+        }
+    }
+
+    /**
      * Get User as DTO
      * @param int $id The user id
      *
-     * @return object
+     * @return object UserDTO
      */
-    public function getUser(int $id)
+    public function getUser(int $id) : UserDTO
     {
         try {
             $body = $this->fetchData($id, 'users/');
 
             if(empty($body)) {
-              //throw exception if no data
-              throw new UserException($email);
+              throw new UserException(self::NO_DATA);
             }
 
             return new UserDTO(
@@ -82,9 +122,8 @@ class User
           
           catch (UserException $e) {
             echo $e->errorMessage();
-          }
+        }
     }
-
 
     /**
      * Create a user
